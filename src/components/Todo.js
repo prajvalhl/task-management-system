@@ -25,6 +25,7 @@ function Todo(props) {
             <FormControl className="todo-edit-form">
               <InputLabel>Edit a Task</InputLabel>
               <Input
+                placeholder={props.todo.task}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
