@@ -11,6 +11,7 @@ import {
   serverTimestamp,
   orderBy,
   query,
+  updateDoc,
 } from "firebase/firestore";
 
 function App() {
@@ -50,6 +51,19 @@ function App() {
     }
   }
 
+  // update documents in database
+  async function updateDocuments(id, updatedTask) {
+    try {
+      const docRef = doc(db, "tasks", id);
+      await updateDoc(docRef, {
+        task: updatedTask,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
   // Delete from database
   async function deleteFromFirebase(id) {
     try {
@@ -63,6 +77,7 @@ function App() {
   return (
     <div className="App">
       <h1>Task Management System</h1>
+      <div id="toast"></div>
       <form>
         <FormControl className="todo-form">
           <InputLabel>Write a Task</InputLabel>
@@ -81,7 +96,7 @@ function App() {
           variant="contained"
           onClick={addToFirebase}
         >
-          Add Todo
+          Add Task
         </Button>
       </form>
       <ul>
@@ -90,6 +105,7 @@ function App() {
             key={todo.id}
             todo={todo}
             deleteFunc={deleteFromFirebase}
+            updateFunc={updateDocuments}
           ></Todo>
         ))}
       </ul>
