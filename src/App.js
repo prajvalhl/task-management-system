@@ -86,7 +86,11 @@ function App() {
       </form>
       <ul>
         {todos.map((todo) => (
-          <Todo key={todo.id} todo={todo}></Todo>
+          <Todo
+            key={todo.id}
+            todo={todo}
+            deleteFunc={deleteFromFirebase}
+          ></Todo>
         ))}
       </ul>
     </div>

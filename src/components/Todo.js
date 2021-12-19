@@ -23,6 +23,13 @@ function Todo(props) {
             secondary="Some Deadline ⏰"
           />
         </ListItem>
+        <Button
+          onClick={() => {
+            props.deleteFunc(props.todo.id);
+          }}
+        >
+          Remove
+        </Button>
       </List>
     </div>
   );
