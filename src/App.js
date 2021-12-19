@@ -65,7 +65,7 @@ function App() {
       <h1>Task Management System</h1>
       <form>
         <FormControl className="todo-form">
-          <InputLabel>Write a Todo</InputLabel>
+          <InputLabel>Write a Task</InputLabel>
           <Input
             type="text"
             value={input}
