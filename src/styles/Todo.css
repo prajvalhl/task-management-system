@@ -1,3 +1,35 @@
 .todo-list {
   text-align: center;
 }
+
+.material-icons {
+  color: black;
+}
+
+.edit-modal {
+  background-color: white;
+  padding: 1rem;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 30%;
+  left: 0;
+  right: 0;
+  width: 40%;
+  text-align: center;
+  border-radius: 0.5rem;
+}
+
+.todo-edit-form {
+  width: 60%;
+}
+
+@media (max-width: 700px) {
+  .edit-modal {
+    width: 80%;
+  }
+
+  .todo-edit-form {
+    width: 90%;
+  }
+}
