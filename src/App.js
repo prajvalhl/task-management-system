@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./styles/index.css";
 import { Button, FormControl, Input, InputLabel } from "@mui/material";
 import Todo from "./components/Todo";
+import Header from "./components/Header";
 import { db, collectionReference } from "./firebase";
 import {
   onSnapshot,
@@ -83,7 +84,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Task Management System</h1>
+      <Header />
       <div id="toast"></div>
       <form>
         <FormControl className="todo-form">
@@ -109,6 +110,7 @@ function App() {
       <ul>
         {todos.map((todo) => (
           <Todo
+            className="task-list-item"
             key={todo.id}
             todo={todo}
             deleteFunc={deleteFromFirebase}
