@@ -1,5 +1,6 @@
 .todo-list {
-  text-align: center;
+  /* text-align: center; */
+  margin-left: 1rem;
 }
 
 .material-icons {

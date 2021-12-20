@@ -6,10 +6,26 @@ body {
   text-align: center;
   font-family: "Roboto", sans-serif;
   width: 60%;
+  padding-top: 6rem;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header p {
+  font-size: 2rem;
+  margin-block-start: 1rem;
+  margin-block-end: 1rem;
 }
 
 .todo-form {
-  width: 100%;
+  width: 90%;
 }
 
 .add-todo-btn {
@@ -22,6 +38,10 @@ ul {
 
 @media (max-width: 700px) {
   body {
-    width: 90%;
+    width: 100%;
+  }
+
+  .header p {
+    font-size: 1.5rem;
   }
 }
