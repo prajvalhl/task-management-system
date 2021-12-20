@@ -4,7 +4,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemAvatar,
   Button,
   Modal,
   FormControl,
@@ -46,7 +45,6 @@ function Todo(props) {
       </Modal>
       <List>
         <ListItem>
-          {/* <ListItemAvatar></ListItemAvatar> */}
           <ListItemText
             className="todo-list"
             style={{
