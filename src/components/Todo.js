@@ -9,6 +9,8 @@ import {
   FormControl,
   Input,
   InputLabel,
+  Checkbox,
+  Box,
 } from "@mui/material";
 
 function Todo(props) {
@@ -33,8 +35,9 @@ function Todo(props) {
           </form>
           <br />
           <Button
+            disabled={!input}
             onClick={() => {
-              props.updateFunc(props.todo.id, input);
+              props.updateFunc(props.todo.id, "updateTitle", input);
               setInput("");
               setOpen(false);
             }}
@@ -45,6 +48,16 @@ function Todo(props) {
       </Modal>
       <List>
         <ListItem>
+          <Checkbox
+            checked={props.todo.isDone}
+            onChange={() => {
+              props.updateFunc(
+                props.todo.id,
+                "updateIsDone",
+                !props.todo.isDone
+              );
+            }}
+          />
           <ListItemText
             className="todo-list"
             style={{
@@ -53,21 +66,21 @@ function Todo(props) {
             primary={props.todo.task}
             secondary="Some Deadline ⏰"
           />
+          <Button
+            onClick={() => {
+              setOpen(true);
+            }}
+          >
+            <span className="material-icons">edit</span>
+          </Button>
+          <Button
+            onClick={() => {
+              props.deleteFunc(props.todo.id);
+            }}
+          >
+            <span className="material-icons">delete</span>
+          </Button>
         </ListItem>
-        <Button
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
-          <span className="material-icons">edit</span>
-        </Button>
-        <Button
-          onClick={() => {
-            props.deleteFunc(props.todo.id);
-          }}
-        >
-          <span className="material-icons">delete</span>
-        </Button>
       </List>
     </div>
   );

@@ -52,13 +52,20 @@ function App() {
   }
 
   // update documents in database
-  async function updateDocuments(id, updatedTask) {
+  async function updateDocuments(id, taskName, updatedTask) {
     try {
       const docRef = doc(db, "tasks", id);
-      await updateDoc(docRef, {
-        task: updatedTask,
-        updatedAt: serverTimestamp(),
-      });
+      if (taskName === "updateTitle") {
+        await updateDoc(docRef, {
+          task: updatedTask,
+          updatedAt: serverTimestamp(),
+        });
+      } else if (taskName === "updateIsDone") {
+        await updateDoc(docRef, {
+          isDone: updatedTask,
+          updatedAt: serverTimestamp(),
+        });
+      }
     } catch (err) {
       console.error(err.message);
     }
@@ -106,7 +113,7 @@ function App() {
             todo={todo}
             deleteFunc={deleteFromFirebase}
             updateFunc={updateDocuments}
-          ></Todo>
+          />
         ))}
       </ul>
     </div>
