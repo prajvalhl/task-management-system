@@ -18,6 +18,7 @@ import {
 function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // when app loads, get data from the database
   useEffect(() => {
@@ -86,8 +87,8 @@ function App() {
     <div className="App">
       <Header />
       <div id="toast"></div>
-      <form>
-        <FormControl className="todo-form">
+      <form className="task-form">
+        <FormControl className="task-form-control">
           <InputLabel>Write a Task</InputLabel>
           <Input
             type="text"
