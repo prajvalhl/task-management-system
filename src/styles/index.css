@@ -6,7 +6,7 @@ body {
   text-align: center;
   font-family: "Roboto", sans-serif;
   width: 60%;
-  padding-top: 6rem;
+  padding-top: 11rem;
 }
 
 .header {
@@ -16,6 +16,8 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   width: 100%;
   box-sizing: border-box;
+  background-color: white;
+  z-index: 100;
 }
 
 .header p {
@@ -24,7 +26,21 @@ body {
   margin-block-end: 1rem;
 }
 
-.todo-form {
+.task-form {
+  position: fixed;
+  width: 60%;
+  top: 4.2rem;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255, 255, 255, 0.4);
+  z-index: 99;
+  backdrop-filter: blur(5px);
+  padding: 1rem 0;
+}
+
+.task-form-control {
   width: 90%;
 }
 
@@ -39,6 +55,11 @@ ul {
 @media (max-width: 700px) {
   body {
     width: 100%;
+  }
+
+  .task-form {
+    width: 100%;
+    top: 3.6rem;
   }
 
   .header p {
