@@ -10,12 +10,14 @@ import {
   Input,
   InputLabel,
   Checkbox,
-  Box,
+  DateTimePicker,
 } from "@mui/material";
+import { getDateTime } from "../App";
 
 function Todo(props) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [dateTimeInput, setDateTimeInput] = useState("");
 
   return (
     <div>
@@ -32,13 +34,30 @@ function Todo(props) {
                 onChange={(e) => setInput(e.target.value)}
               />
             </FormControl>
+            <br />
+            <br />
+            <InputLabel>Pick a Deadline</InputLabel>
+            <FormControl>
+              <Input
+                type="datetime-local"
+                className="datetime"
+                value={dateTimeInput}
+                onChange={(e) => setDateTimeInput(e.target.value)}
+              />
+            </FormControl>
           </form>
           <br />
           <Button
-            disabled={!input}
+            disabled={!input && !dateTimeInput}
             onClick={() => {
-              props.updateFunc(props.todo.id, "updateTitle", input);
+              props.updateFunc(
+                props.todo.id,
+                "updateTitle",
+                input ? input : props.todo.task,
+                dateTimeInput ? getDateTime(dateTimeInput) : props.todo.deadline
+              );
               setInput("");
+              setDateTimeInput("");
               setOpen(false);
             }}
           >
@@ -53,7 +72,7 @@ function Todo(props) {
             onChange={() => {
               props.updateFunc(
                 props.todo.id,
-                "updateIsDone",
+                "updateBoolean",
                 !props.todo.isDone
               );
             }}
@@ -64,7 +83,7 @@ function Todo(props) {
               textDecoration: props.todo.isDone ? "line-through" : "none",
             }}
             primary={props.todo.task}
-            secondary="Some Deadline ⏰"
+            secondary={`⏰ Deadline: ${props.todo.deadline}`}
           />
           <Button
             onClick={() => {

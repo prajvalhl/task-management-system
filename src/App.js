@@ -3,22 +3,29 @@ import "./styles/index.css";
 import { Button, FormControl, Input, InputLabel } from "@mui/material";
 import Todo from "./components/Todo";
 import Header from "./components/Header";
-import { db, collectionReference } from "./firebase";
 import {
-  onSnapshot,
-  addDoc,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-  orderBy,
-  query,
-  updateDoc,
-} from "firebase/firestore";
+  db,
+  collectionReference,
+  addToFirebase,
+  updateDocuments,
+  deleteFromFirebase,
+} from "./firebase";
+import { onSnapshot, orderBy, query } from "firebase/firestore";
+
+export function getDateTime(dateTime) {
+  const result = {};
+  result.day = dateTime.slice(8, 10);
+  result.month = dateTime.slice(5, 7);
+  result.year = dateTime.slice(0, 4);
+  result.hour = dateTime.slice(11, 13);
+  result.minute = dateTime.slice(14);
+  return `${result.day}-${result.month}-${result.year} at ${result.hour}:${result.minute}`;
+}
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [dateTimeInput, setDateTimeInput] = useState("");
 
   // when app loads, get data from the database
   useEffect(() => {
@@ -33,63 +40,16 @@ function App() {
         console.error(e.message);
       }
     }
-
     getDataFromFirebase(db);
   }, []);
-
-  // Add to Database
-  async function addToFirebase(e) {
-    e.preventDefault();
-    try {
-      await addDoc(collectionReference, {
-        task: input,
-        isDone: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-      setInput("");
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
-
-  // update documents in database
-  async function updateDocuments(id, taskName, updatedTask) {
-    try {
-      const docRef = doc(db, "tasks", id);
-      if (taskName === "updateTitle") {
-        await updateDoc(docRef, {
-          task: updatedTask,
-          updatedAt: serverTimestamp(),
-        });
-      } else if (taskName === "updateIsDone") {
-        await updateDoc(docRef, {
-          isDone: updatedTask,
-          updatedAt: serverTimestamp(),
-        });
-      }
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
-
-  // Delete from database
-  async function deleteFromFirebase(id) {
-    try {
-      const docRef = doc(db, "tasks", id);
-      await deleteDoc(docRef);
-    } catch (e) {
-      console.error(e.message);
-    }
-  }
 
   return (
     <div className="App">
       <Header />
       <div id="toast"></div>
       <form className="task-form">
-        <FormControl className="task-form-control">
-          <InputLabel>Write a Task</InputLabel>
+        <FormControl className="task-input-control">
+          <InputLabel>What needs to be done?</InputLabel>
           <Input
             type="text"
             value={input}
@@ -98,12 +58,28 @@ function App() {
         </FormControl>
         <br />
         <br />
+        <InputLabel>Pick a Deadline</InputLabel>
+        <FormControl>
+          <Input
+            type="datetime-local"
+            className="datetime"
+            value={dateTimeInput}
+            onChange={(e) => setDateTimeInput(e.target.value)}
+          />
+        </FormControl>
+        <br />
+        <br />
         <Button
           className="add-todo-btn"
-          disabled={!input}
+          disabled={!input || !dateTimeInput}
           type="submit"
           variant="contained"
-          onClick={addToFirebase}
+          onClick={(e) => {
+            e.preventDefault();
+            addToFirebase(input, getDateTime(dateTimeInput));
+            setInput("");
+            setDateTimeInput("");
+          }}
         >
           Add Task
         </Button>
