@@ -6,7 +6,7 @@ body {
   text-align: center;
   font-family: "Roboto", sans-serif;
   width: 60%;
-  padding-top: 11rem;
+  padding-top: 16rem;
 }
 
 .header {
@@ -40,7 +40,7 @@ body {
   padding: 1rem 0;
 }
 
-.task-form-control {
+.task-input-control {
   width: 90%;
 }
 
