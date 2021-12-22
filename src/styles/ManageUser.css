@@ -1,0 +1,19 @@
+.manage-user {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-credentials-form {
+  margin: 1rem 2rem;
+}
+
+@media (max-width: 700px) {
+  .manage-user {
+    flex-direction: column;
+  }
+
+  .user-credentials-form {
+    margin: 1rem 0;
+  }
+}
