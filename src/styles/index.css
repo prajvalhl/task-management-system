@@ -23,7 +23,15 @@ body {
 .header p {
   font-size: 2rem;
   margin-block-start: 1rem;
+  /* margin-block-end: 0.1rem; */
+}
+
+.signOutHeader {
   margin-block-end: 1rem;
+}
+
+.signInHeader {
+  margin-block-end: 0.1rem;
 }
 
 .task-form {
@@ -45,7 +53,7 @@ body {
 }
 
 .add-todo-btn {
-  margin: 1rem 0;
+  margin-left: 1rem;
 }
 
 ul {
