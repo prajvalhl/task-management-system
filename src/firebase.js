@@ -1,13 +1,13 @@
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
-  collection,
   addDoc,
   deleteDoc,
   doc,
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
+import { getAuth, signOut } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDphCye4UyjFjUxIJmDjKsvBxcVxiAKaH8",
@@ -23,13 +23,14 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 // init services
-const db = getFirestore();
+export const db = getFirestore();
+export const auth = getAuth();
 
 // get collection reference
-export const collectionReference = collection(db, "tasks");
+// export const collectionReference = collection(db, "tasks");
 
 // Add to Database
-export async function addToFirebase(input, dateTime) {
+export async function addToFirebase(collectionReference, input, dateTime) {
   try {
     await addDoc(collectionReference, {
       task: input,
@@ -45,13 +46,14 @@ export async function addToFirebase(input, dateTime) {
 
 // update documents in database
 export async function updateDocuments(
+  dbName,
   id,
   taskName,
   updatedTask,
   updatedDateTime
 ) {
   try {
-    const docRef = doc(db, "tasks", id);
+    const docRef = doc(db, dbName, id);
     if (taskName === "updateTitle") {
       await updateDoc(docRef, {
         task: updatedTask,
@@ -70,13 +72,20 @@ export async function updateDocuments(
 }
 
 // Delete from database
-export async function deleteFromFirebase(id) {
+export async function deleteFromFirebase(dbName, id) {
   try {
-    const docRef = doc(db, "tasks", id);
+    const docRef = doc(db, dbName, id);
     await deleteDoc(docRef);
   } catch (e) {
     console.error(e.message);
   }
 }
 
-export { db };
+// signing out a user
+export async function UserSignOut() {
+  try {
+    signOut(auth);
+  } catch (e) {
+    console.error(e.message);
+  }
+}

@@ -12,11 +12,13 @@ import {
   Checkbox,
 } from "@mui/material";
 import { getDateTime } from "../App";
+import { useUserStatus } from "../user-context";
 
 function Todo(props) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
+  const { user } = useUserStatus();
 
   return (
     <div>
@@ -50,6 +52,7 @@ function Todo(props) {
             disabled={!input && !dateTimeInput}
             onClick={() => {
               props.updateFunc(
+                user,
                 props.todo.id,
                 "updateTitle",
                 input ? input : props.todo.task,
@@ -70,6 +73,7 @@ function Todo(props) {
             checked={props.todo.isDone}
             onChange={() => {
               props.updateFunc(
+                user,
                 props.todo.id,
                 "updateBoolean",
                 !props.todo.isDone
@@ -93,7 +97,7 @@ function Todo(props) {
           </Button>
           <Button
             onClick={() => {
-              props.deleteFunc(props.todo.id);
+              props.deleteFunc(user, props.todo.id);
             }}
           >
             <span className="material-icons">delete</span>
