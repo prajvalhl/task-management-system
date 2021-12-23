@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap");
+
+body {
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  width: 60%;
+}
+
+.todo-form {
+  width: 100%;
+}
+
+.add-todo-btn {
+  margin: 1rem 0;
+}
+
+ul {
+  padding: 0;
+}
+
+@media (max-width: 700px) {
+  body {
+    width: 90%;
+  }
+}
