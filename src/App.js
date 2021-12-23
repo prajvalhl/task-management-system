@@ -79,7 +79,7 @@ function App() {
       <h1>Task Management System</h1>
       <div id="toast"></div>
       <form>
-        <FormControl className="todo-form">
+        <FormControl className="todo-form" sx={{ marginBottom: "1rem" }}>
           <InputLabel>Write a Task</InputLabel>
           <Input
             type="text"
@@ -87,8 +87,6 @@ function App() {
             onChange={(e) => setInput(e.target.value)}
           />
         </FormControl>
-        <br />
-        <br />
         <Button
           className="add-todo-btn"
           disabled={!input}

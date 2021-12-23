@@ -11,7 +11,7 @@ import {
   InputLabel,
 } from "@mui/material";
 
-function Todo(props) {
+function Todo({ todo, updateFunc, deleteFunc }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
 
@@ -21,20 +21,21 @@ function Todo(props) {
         <div className="edit-modal">
           <h3>Edit</h3>
           <form>
-            <FormControl className="todo-edit-form">
+            <FormControl
+              className="todo-edit-form"
+              sx={{ marginBottom: "1rem" }}
+            >
               <InputLabel>Edit a Task</InputLabel>
               <Input
-                placeholder={props.todo.task}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
               />
             </FormControl>
           </form>
-          <br />
           <Button
             onClick={() => {
-              props.updateFunc(props.todo.id, input);
+              updateFunc(todo.id, input);
               setInput("");
               setOpen(false);
             }}
@@ -48,26 +49,27 @@ function Todo(props) {
           <ListItemText
             className="todo-list"
             style={{
-              textDecoration: props.todo.isDone ? "line-through" : "none",
+              textDecoration: todo.isDone ? "line-through" : "none",
             }}
-            primary={props.todo.task}
+            primary={todo.task}
             secondary="Some Deadline ⏰"
           />
+          <Button
+            onClick={() => {
+              setOpen(true);
+              setInput(todo.task);
+            }}
+          >
+            <span className="material-icons">edit</span>
+          </Button>
+          <Button
+            onClick={() => {
+              deleteFunc(todo.id);
+            }}
+          >
+            <span className="material-icons">delete</span>
+          </Button>
         </ListItem>
-        <Button
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
-          <span className="material-icons">edit</span>
-        </Button>
-        <Button
-          onClick={() => {
-            props.deleteFunc(props.todo.id);
-          }}
-        >
-          <span className="material-icons">delete</span>
-        </Button>
       </List>
     </div>
   );
