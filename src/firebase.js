@@ -30,12 +30,18 @@ export const auth = getAuth();
 // export const collectionReference = collection(db, "tasks");
 
 // Add to Database
-export async function addToFirebase(collectionReference, input, dateTime) {
+export async function addToFirebase(
+  collectionReference,
+  input,
+  dateTime,
+  dateTime24
+) {
   try {
     await addDoc(collectionReference, {
       task: input,
       isDone: false,
       deadline: dateTime,
+      deadline24: dateTime24,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
