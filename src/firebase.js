@@ -56,14 +56,16 @@ export async function updateDocuments(
   id,
   taskName,
   updatedTask,
-  updatedDateTime
+  updatedDeadline,
+  updatedDeadline24
 ) {
   try {
     const docRef = doc(db, dbName, id);
     if (taskName === "updateTitle") {
       await updateDoc(docRef, {
         task: updatedTask,
-        deadline: updatedDateTime,
+        deadline: updatedDeadline,
+        deadline24: updatedDeadline24,
         updatedAt: serverTimestamp(),
       });
     } else if (taskName === "updateBoolean") {
