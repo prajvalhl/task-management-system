@@ -26,19 +26,25 @@ function Todo(props) {
         <div className="edit-modal">
           <h3>Edit</h3>
           <form>
-            <FormControl className="todo-edit-form">
+            <FormControl
+              className="todo-edit-form"
+              sx={{
+                marginBottom: "1rem",
+              }}
+            >
               <InputLabel>Edit a Task</InputLabel>
               <Input
-                placeholder={props.todo.task}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
               />
             </FormControl>
-            <br />
-            <br />
             <InputLabel>Pick a Deadline</InputLabel>
-            <FormControl>
+            <FormControl
+              sx={{
+                display: "block",
+              }}
+            >
               <Input
                 type="datetime-local"
                 className="datetime"
@@ -47,8 +53,10 @@ function Todo(props) {
               />
             </FormControl>
           </form>
-          <br />
           <Button
+            sx={{
+              marginTop: "1rem",
+            }}
             disabled={!input && !dateTimeInput}
             onClick={() => {
               props.updateFunc(
@@ -91,6 +99,8 @@ function Todo(props) {
           <Button
             onClick={() => {
               setOpen(true);
+              setInput(props.todo.task);
+              setDateTimeInput(props.todo.deadline24);
             }}
           >
             <span className="material-icons">edit</span>

@@ -15,7 +15,12 @@ function ManageUser() {
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const { user, setUser } = useUserStatus();
+  const { setUser } = useUserStatus();
+
+  const styles = {
+    display: "block",
+    margin: "1rem auto",
+  };
 
   function registerUser(email, pass, confirmPass) {
     if (email && pass === confirmPass) {
@@ -61,7 +66,7 @@ function ManageUser() {
       <div className="user-credentials-form">
         <h1>Log In</h1>
         <form>
-          <FormControl>
+          <FormControl sx={styles}>
             <InputLabel>Email</InputLabel>
             <Input
               type="email"
@@ -70,9 +75,7 @@ function ManageUser() {
               required
             />
           </FormControl>
-          <br />
-          <br />
-          <FormControl>
+          <FormControl sx={styles}>
             <InputLabel>Password</InputLabel>
             <Input
               type="password"
@@ -81,9 +84,8 @@ function ManageUser() {
               required
             />
           </FormControl>
-          <br />
-          <br />
           <Button
+            sx={styles}
             type="submit"
             variant="contained"
             onClick={(e) => {
@@ -101,7 +103,7 @@ function ManageUser() {
       <div className="user-credentials-form">
         <h1>Sign Up</h1>
         <form>
-          <FormControl>
+          <FormControl sx={styles}>
             <InputLabel>Email</InputLabel>
             <Input
               type="email"
@@ -110,9 +112,7 @@ function ManageUser() {
               required
             />
           </FormControl>
-          <br />
-          <br />
-          <FormControl>
+          <FormControl sx={styles}>
             <InputLabel>Password</InputLabel>
             <Input
               type="password"
@@ -121,9 +121,7 @@ function ManageUser() {
               required
             />
           </FormControl>
-          <br />
-          <br />
-          <FormControl>
+          <FormControl sx={styles}>
             <InputLabel>Confirm Password</InputLabel>
             <Input
               type="password"
@@ -132,9 +130,8 @@ function ManageUser() {
               required
             />
           </FormControl>
-          <br />
-          <br />
           <Button
+            sx={styles}
             disabled={!email || !password || !confirmPassword}
             type="submit"
             variant="contained"

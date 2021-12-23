@@ -9,7 +9,6 @@ import {
   addToFirebase,
   updateDocuments,
   deleteFromFirebase,
-  UserSignOut,
 } from "./firebase";
 import { onSnapshot, orderBy, query, collection } from "firebase/firestore";
 import { useUserStatus } from "./user-context";
@@ -21,14 +20,23 @@ export function getDateTime(dateTime) {
   result.year = dateTime.slice(0, 4);
   result.hour = dateTime.slice(11, 13);
   result.minute = dateTime.slice(14);
-  return `${result.day}-${result.month}-${result.year} at ${result.hour}:${result.minute}`;
+  if (result.hour > 12) {
+    result.hour12 = result.hour - 12;
+  } else if (result.hour === "00") {
+    result.hour12 = 12;
+  } else {
+    result.hour12 = result.hour;
+  }
+  return `${result.day}-${result.month}-${result.year} at ${result.hour12}:${
+    result.minute
+  } ${result.hour >= 12 ? "PM" : "AM"}`;
 }
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
-  const { user, setUser } = useUserStatus();
+  const { user } = useUserStatus();
   const collectionReference = collection(db, user);
 
   // when app loads, get data from the database
@@ -45,10 +53,10 @@ function App() {
       }
     }
     getDataFromFirebase(db);
-  }, [user]);
+  }, [user, collectionReference]);
 
   return (
-    <div className="App">
+    <div className={user === "tasks" ? "padding-off" : "padding-on"}>
       <Header />
       {user === "tasks" ? (
         <ManageUser />
@@ -85,21 +93,6 @@ function App() {
               sx={{
                 margin: "1rem",
               }}
-              // disabled={!input || !dateTimeInput}
-              type="submit"
-              variant="contained"
-              onClick={(e) => {
-                e.preventDefault();
-                UserSignOut();
-                setUser("tasks");
-              }}
-            >
-              Sign Out
-            </Button>
-            <Button
-              sx={{
-                margin: "1rem",
-              }}
               disabled={!input || !dateTimeInput}
               type="submit"
               variant="contained"
@@ -108,7 +101,8 @@ function App() {
                 addToFirebase(
                   collectionReference,
                   input,
-                  getDateTime(dateTimeInput)
+                  getDateTime(dateTimeInput),
+                  dateTimeInput
                 );
                 setInput("");
                 setDateTimeInput("");
