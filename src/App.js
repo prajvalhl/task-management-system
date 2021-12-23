@@ -53,7 +53,7 @@ function App() {
       }
     }
     getDataFromFirebase(db);
-  }, [user, collectionReference]);
+  }, [user]);
 
   return (
     <div className={user === "tasks" ? "padding-off" : "padding-on"}>

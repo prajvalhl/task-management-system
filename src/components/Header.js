@@ -7,13 +7,13 @@ function Header() {
 
   return (
     <div className="header">
-      <div>
+      <div className="brand">
         <p className="brand-name">Task Management System</p>
       </div>
-      <div>
+      <div className="username-display">
         <p>{!(user === "tasks") && `Welcome, ${user}`}</p>
       </div>
-      <div>
+      <div className="sign-out-btn">
         <button
           style={{ display: user === "tasks" ? "none" : "block" }}
           onClick={(e) => {
