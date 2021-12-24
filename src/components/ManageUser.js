@@ -7,11 +7,13 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { useUserStatus } from "../user-context";
+import { BounceLoader } from "react-spinners";
 
 function ManageUser() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -20,6 +22,13 @@ function ManageUser() {
   const styles = {
     display: "block",
     margin: "1rem auto",
+  };
+
+  const spinnerStyle = {
+    position: "fixed",
+    top: "50%",
+    left: "46%",
+    transform: "translate(-50%, -50%)",
   };
 
   function registerUser(email, pass, confirmPass) {
@@ -42,8 +51,10 @@ function ManageUser() {
         password
       );
       setUser(credentials.user.email);
+      setIsLoading(false);
     } catch (e) {
       alert(e.message);
+      setIsLoading(false);
     }
   }
 
@@ -97,6 +108,9 @@ function ManageUser() {
           </Button>
         </form>
       </div>
+      <div style={spinnerStyle}>
+        <BounceLoader loading={isLoading} color="#2196f3" />
+      </div>
       <div>
         <p>OR</p>
       </div>
@@ -137,8 +151,8 @@ function ManageUser() {
             variant="contained"
             onClick={async (e) => {
               e.preventDefault();
-              const res = await registerUser(email, password, confirmPassword);
-              console.log(res);
+              setIsLoading(true);
+              registerUser(email, password, confirmPassword);
             }}
           >
             Register

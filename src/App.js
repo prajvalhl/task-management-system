@@ -9,9 +9,19 @@ import {
   addToFirebase,
   updateDocuments,
   deleteFromFirebase,
+  auth,
 } from "./firebase";
 import { onSnapshot, orderBy, query, collection } from "firebase/firestore";
 import { useUserStatus } from "./user-context";
+import { onAuthStateChanged } from "firebase/auth";
+import { BounceLoader } from "react-spinners";
+
+const spinnerStyle = {
+  position: "fixed",
+  top: "50%",
+  left: "46%",
+  transform: "translate(-50%, -50%)",
+};
 
 export function getDateTime(dateTime) {
   const result = {};
@@ -36,24 +46,34 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
-  const { user } = useUserStatus();
+  const [isLoading, setIsLoading] = useState(false);
+  const { user, setUser } = useUserStatus();
   const collectionReference = collection(db, user);
 
   // when app loads, get data from the database
   useEffect(() => {
+    setIsLoading(true);
     async function getDataFromFirebase(db) {
       const q = query(collectionReference, orderBy("createdAt", "desc"));
       try {
         onSnapshot(q, ({ docs }) => {
           const todoList = docs.map((doc) => ({ ...doc.data(), id: doc.id }));
           setTodos(todoList);
+          setIsLoading(false);
         });
       } catch (e) {
         console.error(e.message);
+        setIsLoading(false);
       }
     }
     getDataFromFirebase(db);
   }, [user]);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setUser(user.email ? user.email : "tasks");
+    });
+  }, []);
 
   return (
     <div className={user === "tasks" ? "padding-off" : "padding-on"}>
@@ -62,6 +82,9 @@ function App() {
         <ManageUser />
       ) : (
         <div>
+          <div style={spinnerStyle}>
+            <BounceLoader loading={isLoading} color="#2196f3" />
+          </div>
           <form className="task-form">
             <FormControl
               className="task-input-control"
@@ -98,6 +121,7 @@ function App() {
               variant="contained"
               onClick={(e) => {
                 e.preventDefault();
+                window.scrollTo(0, 0);
                 addToFirebase(
                   collectionReference,
                   input,

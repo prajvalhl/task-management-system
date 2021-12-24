@@ -22,7 +22,7 @@ function Todo({ todo, updateFunc, deleteFunc }) {
 
   return (
     <div>
-      <Modal open={open} onClose={(e) => setOpen(false)}>
+      <Modal open={open} onClose={() => setOpen(false)}>
         <div className="edit-modal">
           <h3>Edit</h3>
           <form>
