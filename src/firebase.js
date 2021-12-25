@@ -34,7 +34,8 @@ export async function addToFirebase(
   collectionReference,
   input,
   dateTime,
-  dateTime24
+  dateTime24,
+  commentField
 ) {
   try {
     await addDoc(collectionReference, {
@@ -44,6 +45,7 @@ export async function addToFirebase(
       deadline24: dateTime24,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      comment: commentField,
     });
   } catch (err) {
     console.error(err.message);
@@ -57,7 +59,8 @@ export async function updateDocuments(
   taskName,
   updatedTask,
   updatedDeadline,
-  updatedDeadline24
+  updatedDeadline24,
+  commentField
 ) {
   try {
     const docRef = doc(db, dbName, id);
@@ -67,6 +70,7 @@ export async function updateDocuments(
         deadline: updatedDeadline,
         deadline24: updatedDeadline24,
         updatedAt: serverTimestamp(),
+        comment: commentField,
       });
     } else if (taskName === "updateBoolean") {
       await updateDoc(docRef, {
