@@ -17,6 +17,7 @@ import { useUserStatus } from "../user-context";
 function Todo({ todo, updateFunc, deleteFunc }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [comment, setComment] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
   const { user } = useUserStatus();
 
@@ -52,28 +53,45 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                 onChange={(e) => setDateTimeInput(e.target.value)}
               />
             </FormControl>
+            <FormControl
+              className="todo-edit-form"
+              sx={{
+                marginTop: "1rem",
+              }}
+            >
+              <InputLabel>Add a comment (Optional)</InputLabel>
+              <Input
+                type="text"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </FormControl>
+            <Button
+              sx={{
+                margin: "1rem auto 0 auto",
+                display: "block",
+              }}
+              type="submit"
+              disabled={!input && !dateTimeInput}
+              onClick={(e) => {
+                e.preventDefault();
+                updateFunc(
+                  user,
+                  todo.id,
+                  "updateTitle",
+                  input ? input : todo.task,
+                  dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
+                  dateTimeInput ? dateTimeInput : todo.deadline24,
+                  comment
+                );
+                setInput("");
+                setDateTimeInput("");
+                setOpen(false);
+              }}
+            >
+              Update Task
+            </Button>
           </form>
-          <Button
-            sx={{
-              marginTop: "1rem",
-            }}
-            disabled={!input && !dateTimeInput}
-            onClick={() => {
-              updateFunc(
-                user,
-                todo.id,
-                "updateTitle",
-                input ? input : todo.task,
-                dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
-                dateTimeInput ? dateTimeInput : todo.deadline24
-              );
-              setInput("");
-              setDateTimeInput("");
-              setOpen(false);
-            }}
-          >
-            Update Task
-          </Button>
         </div>
       </Modal>
       <List>
@@ -90,13 +108,16 @@ function Todo({ todo, updateFunc, deleteFunc }) {
               textDecoration: todo.isDone ? "line-through" : "none",
             }}
             primary={todo.task}
-            secondary={`⏰ Deadline: ${todo.deadline}`}
+            secondary={`⏰ Deadline: ${todo.deadline} ${
+              todo?.comment ? "|" : ""
+            } ${todo?.comment ? todo.comment : ""}`}
           />
           <Button
             onClick={() => {
               setOpen(true);
               setInput(todo.task);
               setDateTimeInput(todo.deadline24);
+              setComment(todo.comment);
             }}
           >
             <span className="material-icons">edit</span>

@@ -45,6 +45,7 @@ export function getDateTime(dateTime) {
 function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
+  const [comment, setComment] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { user, setUser } = useUserStatus();
@@ -101,6 +102,7 @@ function App() {
             </FormControl>
             <InputLabel>Pick a Deadline</InputLabel>
             <FormControl
+              className="task-datetime-control"
               sx={{
                 display: "block",
               }}
@@ -112,9 +114,23 @@ function App() {
                 onChange={(e) => setDateTimeInput(e.target.value)}
               />
             </FormControl>
+            <FormControl
+              className="task-comment-control"
+              sx={{
+                marginTop: "1rem",
+              }}
+            >
+              <InputLabel>Add a comment (Optional)</InputLabel>
+              <Input
+                type="text"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </FormControl>
             <Button
               sx={{
-                margin: "1rem",
+                margin: "1rem auto",
+                display: "block",
               }}
               disabled={!input || !dateTimeInput}
               type="submit"
@@ -126,7 +142,8 @@ function App() {
                   collectionReference,
                   input,
                   getDateTime(dateTimeInput),
-                  dateTimeInput
+                  dateTimeInput,
+                  comment
                 );
                 setInput("");
                 setDateTimeInput("");
