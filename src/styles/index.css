@@ -10,11 +10,10 @@ body {
   text-align: center;
   font-family: "Roboto", sans-serif;
   width: 60%;
-  /* padding-top: 17rem; */
 }
 
 .padding-on {
-  padding-top: 17rem;
+  padding-top: 20rem;
 }
 
 .padding-off {
@@ -68,6 +67,10 @@ body {
   width: 90%;
 }
 
+.task-comment-control {
+  width: 60%;
+}
+
 .add-todo-btn {
   margin-left: 1rem;
 }
@@ -82,7 +85,7 @@ ul {
   }
 
   .padding-on {
-    padding-top: 18rem;
+    padding-top: 22rem;
   }
 
   .task-form {
