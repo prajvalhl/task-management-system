@@ -112,6 +112,15 @@ function Todo({ todo, updateFunc, deleteFunc }) {
               todo?.comment ? "|" : ""
             } ${todo?.comment ? todo.comment : ""}`}
           />
+          {todo.fileURL && (
+            <Button
+              onClick={() => {
+                window.open(todo.fileURL, "_blank").focus();
+              }}
+            >
+              <span className="material-icons">download</span>
+            </Button>
+          )}
           <Button
             onClick={() => {
               setOpen(true);

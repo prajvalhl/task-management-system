@@ -10,8 +10,10 @@ import {
   updateDocuments,
   deleteFromFirebase,
   auth,
+  storage,
 } from "./firebase";
 import { onSnapshot, orderBy, query, collection } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useUserStatus } from "./user-context";
 import { onAuthStateChanged } from "firebase/auth";
 import { BounceLoader } from "react-spinners";
@@ -46,6 +48,8 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
   const [comment, setComment] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [fileURL, setFileURL] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { user, setUser } = useUserStatus();
@@ -75,6 +79,30 @@ function App() {
       setUser(user.email ? user.email : "tasks");
     });
   }, []);
+
+  function uploadFile(file) {
+    if (!file) {
+      alert("No file found");
+      return;
+    }
+    const storageRef = ref(storage, `/files/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgress(progress);
+      },
+      (err) => {
+        console.error(err.message);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => setFileURL(url));
+      }
+    );
+  }
 
   return (
     <div className={user === "tasks" ? "padding-off" : "padding-on"}>
@@ -127,6 +155,21 @@ function App() {
                 onChange={(e) => setComment(e.target.value)}
               />
             </FormControl>
+            <FormControl
+              sx={{
+                marginTop: "1rem",
+                display: "block",
+              }}
+            >
+              <Input
+                type="file"
+                onChange={(e) => {
+                  e.preventDefault();
+                  uploadFile(e.target.files[0]);
+                  // console.log(e.target.files[0]);
+                }}
+              />
+            </FormControl>
             <Button
               sx={{
                 margin: "1rem auto",
@@ -143,10 +186,12 @@ function App() {
                   input,
                   getDateTime(dateTimeInput),
                   dateTimeInput,
-                  comment
+                  comment,
+                  fileURL
                 );
                 setInput("");
                 setDateTimeInput("");
+                setComment("");
               }}
             >
               Add Task
