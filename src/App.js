@@ -147,6 +147,7 @@ function App() {
                 );
                 setInput("");
                 setDateTimeInput("");
+                setComment("");
               }}
             >
               Add Task
