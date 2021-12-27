@@ -78,7 +78,7 @@ function App() {
           variant="contained"
           onClick={(e) => {
             e.preventDefault();
-            addToFirebase(input, getDateTime(dateTimeInput));
+            addToFirebase(input, getDateTime(dateTimeInput), dateTimeInput);
             setInput("");
             setDateTimeInput("");
           }}

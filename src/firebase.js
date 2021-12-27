@@ -29,12 +29,13 @@ const db = getFirestore();
 export const collectionReference = collection(db, "tasks");
 
 // Add to Database
-export async function addToFirebase(input, dateTime) {
+export async function addToFirebase(input, dateTime, dateTime24) {
   try {
     await addDoc(collectionReference, {
       task: input,
       isDone: false,
       deadline: dateTime,
+      deadline24: dateTime24,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -48,7 +49,8 @@ export async function updateDocuments(
   id,
   taskName,
   updatedTask,
-  updatedDateTime
+  updatedDateTime,
+  deadline24
 ) {
   try {
     const docRef = doc(db, "tasks", id);
@@ -56,6 +58,7 @@ export async function updateDocuments(
       await updateDoc(docRef, {
         task: updatedTask,
         deadline: updatedDateTime,
+        deadline24: deadline24,
         updatedAt: serverTimestamp(),
       });
     } else if (taskName === "updateBoolean") {

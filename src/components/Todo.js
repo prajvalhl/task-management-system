@@ -52,7 +52,8 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                 todo.id,
                 "updateTitle",
                 input ? input : todo.task,
-                dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline
+                dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
+                dateTimeInput
               );
               setInput("");
               setDateTimeInput("");
@@ -83,6 +84,7 @@ function Todo({ todo, updateFunc, deleteFunc }) {
             onClick={() => {
               setOpen(true);
               setInput(todo.task);
+              setDateTimeInput(todo.deadline24);
             }}
           >
             <span className="material-icons">edit</span>
