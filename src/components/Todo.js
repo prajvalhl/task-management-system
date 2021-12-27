@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { getDateTime } from "../App";
 
-function Todo(props) {
+function Todo({ todo, updateFunc, deleteFunc }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
@@ -27,7 +27,6 @@ function Todo(props) {
             <FormControl className="todo-edit-form">
               <InputLabel>Edit a Task</InputLabel>
               <Input
-                placeholder={props.todo.task}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -49,11 +48,11 @@ function Todo(props) {
           <Button
             disabled={!input && !dateTimeInput}
             onClick={() => {
-              props.updateFunc(
-                props.todo.id,
+              updateFunc(
+                todo.id,
                 "updateTitle",
-                input ? input : props.todo.task,
-                dateTimeInput ? getDateTime(dateTimeInput) : props.todo.deadline
+                input ? input : todo.task,
+                dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline
               );
               setInput("");
               setDateTimeInput("");
@@ -67,33 +66,30 @@ function Todo(props) {
       <List>
         <ListItem>
           <Checkbox
-            checked={props.todo.isDone}
+            checked={todo.isDone}
             onChange={() => {
-              props.updateFunc(
-                props.todo.id,
-                "updateBoolean",
-                !props.todo.isDone
-              );
+              updateFunc(todo.id, "updateBoolean", !todo.isDone);
             }}
           />
           <ListItemText
             className="todo-list"
             style={{
-              textDecoration: props.todo.isDone ? "line-through" : "none",
+              textDecoration: todo.isDone ? "line-through" : "none",
             }}
-            primary={props.todo.task}
-            secondary={`⏰ Deadline: ${props.todo.deadline}`}
+            primary={todo.task}
+            secondary={`⏰ Deadline: ${todo.deadline}`}
           />
           <Button
             onClick={() => {
               setOpen(true);
+              setInput(todo.task);
             }}
           >
             <span className="material-icons">edit</span>
           </Button>
           <Button
             onClick={() => {
-              props.deleteFunc(props.todo.id);
+              deleteFunc(todo.id);
             }}
           >
             <span className="material-icons">delete</span>

@@ -48,7 +48,10 @@ function App() {
       <Header />
       <div id="toast"></div>
       <form className="task-form">
-        <FormControl className="task-input-control">
+        <FormControl
+          className="task-input-control"
+          sx={{ marginBottom: "1rem" }}
+        >
           <InputLabel>What needs to be done?</InputLabel>
           <Input
             type="text"
@@ -56,8 +59,6 @@ function App() {
             onChange={(e) => setInput(e.target.value)}
           />
         </FormControl>
-        <br />
-        <br />
         <InputLabel>Pick a Deadline</InputLabel>
         <FormControl>
           <Input
@@ -67,10 +68,11 @@ function App() {
             onChange={(e) => setDateTimeInput(e.target.value)}
           />
         </FormControl>
-        <br />
-        <br />
         <Button
-          className="add-todo-btn"
+          sx={{
+            margin: "1rem auto",
+            display: "block",
+          }}
           disabled={!input || !dateTimeInput}
           type="submit"
           variant="contained"
