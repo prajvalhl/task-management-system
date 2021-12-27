@@ -6,10 +6,42 @@ body {
   text-align: center;
   font-family: "Roboto", sans-serif;
   width: 60%;
+  padding-top: 16rem;
 }
 
-.todo-form {
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   width: 100%;
+  box-sizing: border-box;
+  background-color: white;
+  z-index: 100;
+}
+
+.header p {
+  font-size: 2rem;
+  margin-block-start: 1rem;
+  margin-block-end: 1rem;
+}
+
+.task-form {
+  position: fixed;
+  width: 60%;
+  top: 4.2rem;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255, 255, 255, 0.4);
+  z-index: 99;
+  backdrop-filter: blur(5px);
+  padding: 1rem 0;
+}
+
+.task-input-control {
+  width: 90%;
 }
 
 .add-todo-btn {
@@ -22,6 +54,15 @@ ul {
 
 @media (max-width: 700px) {
   body {
-    width: 90%;
+    width: 100%;
+  }
+
+  .task-form {
+    width: 100%;
+    top: 3.6rem;
+  }
+
+  .header p {
+    font-size: 1.5rem;
   }
 }

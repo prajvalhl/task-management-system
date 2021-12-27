@@ -1,5 +1,13 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDphCye4UyjFjUxIJmDjKsvBxcVxiAKaH8",
@@ -19,5 +27,59 @@ const db = getFirestore();
 
 // get collection reference
 export const collectionReference = collection(db, "tasks");
+
+// Add to Database
+export async function addToFirebase(input, dateTime, dateTime24) {
+  try {
+    await addDoc(collectionReference, {
+      task: input,
+      isDone: false,
+      deadline: dateTime,
+      deadline24: dateTime24,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+
+// update documents in database
+export async function updateDocuments(
+  id,
+  taskName,
+  updatedTask,
+  updatedDeadline,
+  updatedDeadline24
+) {
+  try {
+    const docRef = doc(db, "tasks", id);
+    if (taskName === "updateTitle") {
+      await updateDoc(docRef, {
+        task: updatedTask,
+        deadline: updatedDeadline,
+        deadline24: updatedDeadline24,
+        updatedAt: serverTimestamp(),
+      });
+    } else if (taskName === "updateBoolean") {
+      await updateDoc(docRef, {
+        isDone: updatedTask,
+        updatedAt: serverTimestamp(),
+      });
+    }
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+
+// Delete from database
+export async function deleteFromFirebase(id) {
+  try {
+    const docRef = doc(db, "tasks", id);
+    await deleteDoc(docRef);
+  } catch (e) {
+    console.error(e.message);
+  }
+}
 
 export { db };
