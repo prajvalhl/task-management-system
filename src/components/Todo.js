@@ -24,7 +24,12 @@ function Todo({ todo, updateFunc, deleteFunc }) {
         <div className="edit-modal">
           <h3>Edit</h3>
           <form>
-            <FormControl className="todo-edit-form">
+            <FormControl
+              className="todo-edit-form"
+              sx={{
+                marginBottom: "1rem",
+              }}
+            >
               <InputLabel>Edit a Task</InputLabel>
               <Input
                 type="text"
@@ -32,10 +37,12 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                 onChange={(e) => setInput(e.target.value)}
               />
             </FormControl>
-            <br />
-            <br />
             <InputLabel>Pick a Deadline</InputLabel>
-            <FormControl>
+            <FormControl
+              sx={{
+                display: "block",
+              }}
+            >
               <Input
                 type="datetime-local"
                 className="datetime"
@@ -44,8 +51,10 @@ function Todo({ todo, updateFunc, deleteFunc }) {
               />
             </FormControl>
           </form>
-          <br />
           <Button
+            sx={{
+              marginTop: "1rem",
+            }}
             disabled={!input && !dateTimeInput}
             onClick={() => {
               updateFunc(
@@ -53,7 +62,7 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                 "updateTitle",
                 input ? input : todo.task,
                 dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
-                dateTimeInput
+                dateTimeInput ? dateTimeInput : todo.deadline24
               );
               setInput("");
               setDateTimeInput("");
