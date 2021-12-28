@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./styles/index.css";
 import { Button, FormControl, Input, InputLabel } from "@mui/material";
 import Todo from "./components/Todo";
@@ -54,6 +54,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const { user, setUser } = useUserStatus();
   const collectionReference = collection(db, user);
+  const fileRef = useRef();
 
   // when app loads, get data from the database
   useEffect(() => {
@@ -155,21 +156,19 @@ function App() {
                 onChange={(e) => setComment(e.target.value)}
               />
             </FormControl>
-            <FormControl
-              sx={{
-                marginTop: "1rem",
+            <input
+              style={{
+                margin: "1rem auto",
                 display: "block",
+                fontSize: "1rem",
               }}
-            >
-              <Input
-                type="file"
-                onChange={(e) => {
-                  e.preventDefault();
-                  uploadFile(e.target.files[0]);
-                  // console.log(e.target.files[0]);
-                }}
-              />
-            </FormControl>
+              type="file"
+              ref={fileRef}
+              onChange={(e) => {
+                e.preventDefault();
+                uploadFile(e.target.files[0]);
+              }}
+            />
             <Button
               sx={{
                 margin: "1rem auto",
@@ -192,6 +191,7 @@ function App() {
                 setInput("");
                 setDateTimeInput("");
                 setComment("");
+                fileRef.current.value = "";
               }}
             >
               Add Task
