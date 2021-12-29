@@ -1,27 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./styles/index.css";
-import { Button, FormControl, Input, InputLabel } from "@mui/material";
 import Todo from "./components/Todo";
 import Header from "./components/Header";
 import ManageUser from "./components/ManageUser";
-import {
-  db,
-  addToFirebase,
-  updateDocuments,
-  deleteFromFirebase,
-  auth,
-} from "./firebase";
+import { db, updateDocuments, deleteFromFirebase, auth } from "./firebase";
 import { onSnapshot, orderBy, query, collection } from "firebase/firestore";
 import { useUserStatus } from "./user-context";
 import { onAuthStateChanged } from "firebase/auth";
-import { BounceLoader } from "react-spinners";
-
-const spinnerStyle = {
-  position: "fixed",
-  top: "50%",
-  left: "46%",
-  transform: "translate(-50%, -50%)",
-};
+import Spinner from "./components/Spinner";
+import TodoForm from "./components/TodoForm";
 
 export function getDateTime(dateTime) {
   const result = {};
@@ -44,8 +31,6 @@ export function getDateTime(dateTime) {
 
 function App() {
   const [todos, setTodos] = useState([]);
-  const [input, setInput] = useState("");
-  const [dateTimeInput, setDateTimeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { user, setUser } = useUserStatus();
   const collectionReference = collection(db, user);
@@ -82,59 +67,8 @@ function App() {
         <ManageUser />
       ) : (
         <div>
-          <div style={spinnerStyle}>
-            <BounceLoader loading={isLoading} color="#2196f3" />
-          </div>
-          <form className="task-form">
-            <FormControl
-              className="task-input-control"
-              sx={{
-                marginBottom: "1rem",
-              }}
-            >
-              <InputLabel>What needs to be done?</InputLabel>
-              <Input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-              />
-            </FormControl>
-            <InputLabel>Pick a Deadline</InputLabel>
-            <FormControl
-              sx={{
-                display: "block",
-              }}
-            >
-              <Input
-                type="datetime-local"
-                className="datetime"
-                value={dateTimeInput}
-                onChange={(e) => setDateTimeInput(e.target.value)}
-              />
-            </FormControl>
-            <Button
-              sx={{
-                margin: "1rem",
-              }}
-              disabled={!input || !dateTimeInput}
-              type="submit"
-              variant="contained"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo(0, 0);
-                addToFirebase(
-                  collectionReference,
-                  input,
-                  getDateTime(dateTimeInput),
-                  dateTimeInput
-                );
-                setInput("");
-                setDateTimeInput("");
-              }}
-            >
-              Add Task
-            </Button>
-          </form>
+          <Spinner isLoading={isLoading} />
+          <TodoForm />
           <ul>
             {todos.map((todo) => (
               <Todo

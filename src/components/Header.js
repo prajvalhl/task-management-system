@@ -11,7 +11,7 @@ function Header() {
         <p className="brand-name">Task Management System</p>
       </div>
       <div className="username-display">
-        <p>{!(user === "tasks") && `Welcome, ${user}`}</p>
+        <p>{!(user === "tasks") && user}</p>
       </div>
       <div className="sign-out-btn">
         <button

@@ -52,28 +52,30 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                 onChange={(e) => setDateTimeInput(e.target.value)}
               />
             </FormControl>
+            <Button
+              sx={{
+                marginTop: "1rem",
+              }}
+              type="submit"
+              disabled={!input && !dateTimeInput}
+              onClick={(e) => {
+                e.preventDefault();
+                updateFunc(
+                  user,
+                  todo.id,
+                  "updateTitle",
+                  input ? input : todo.task,
+                  dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
+                  dateTimeInput ? dateTimeInput : todo.deadline24
+                );
+                setInput("");
+                setDateTimeInput("");
+                setOpen(false);
+              }}
+            >
+              Update Task
+            </Button>
           </form>
-          <Button
-            sx={{
-              marginTop: "1rem",
-            }}
-            disabled={!input && !dateTimeInput}
-            onClick={() => {
-              updateFunc(
-                user,
-                todo.id,
-                "updateTitle",
-                input ? input : todo.task,
-                dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
-                dateTimeInput ? dateTimeInput : todo.deadline24
-              );
-              setInput("");
-              setDateTimeInput("");
-              setOpen(false);
-            }}
-          >
-            Update Task
-          </Button>
         </div>
       </Modal>
       <List>
