@@ -7,7 +7,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { useUserStatus } from "../user-context";
-import { BounceLoader } from "react-spinners";
+import Spinner from "./Spinner";
 
 function ManageUser() {
   const [email, setEmail] = useState("");
@@ -22,13 +22,6 @@ function ManageUser() {
   const styles = {
     display: "block",
     margin: "1rem auto",
-  };
-
-  const spinnerStyle = {
-    position: "fixed",
-    top: "50%",
-    left: "46%",
-    transform: "translate(-50%, -50%)",
   };
 
   function registerUser(email, pass, confirmPass) {
@@ -108,9 +101,7 @@ function ManageUser() {
           </Button>
         </form>
       </div>
-      <div style={spinnerStyle}>
-        <BounceLoader loading={isLoading} color="#2196f3" />
-      </div>
+      <Spinner isLoading={isLoading} />
       <div>
         <p>OR</p>
       </div>

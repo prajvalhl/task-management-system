@@ -1,29 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/index.css";
-import { Button, FormControl, Input, InputLabel } from "@mui/material";
 import Todo from "./components/Todo";
 import Header from "./components/Header";
 import ManageUser from "./components/ManageUser";
-import {
-  db,
-  addToFirebase,
-  updateDocuments,
-  deleteFromFirebase,
-  auth,
-  storage,
-} from "./firebase";
+import { db, updateDocuments, deleteFromFirebase, auth } from "./firebase";
 import { onSnapshot, orderBy, query, collection } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useUserStatus } from "./user-context";
 import { onAuthStateChanged } from "firebase/auth";
-import { BounceLoader } from "react-spinners";
-
-const spinnerStyle = {
-  position: "fixed",
-  top: "50%",
-  left: "46%",
-  transform: "translate(-50%, -50%)",
-};
+import Spinner from "./components/Spinner";
+import TodoForm from "./components/TodoForm";
 
 export function getDateTime(dateTime) {
   const result = {};
@@ -46,15 +31,9 @@ export function getDateTime(dateTime) {
 
 function App() {
   const [todos, setTodos] = useState([]);
-  const [input, setInput] = useState("");
-  const [comment, setComment] = useState("");
-  const [progress, setProgress] = useState(0);
-  const [fileURL, setFileURL] = useState("");
-  const [dateTimeInput, setDateTimeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { user, setUser } = useUserStatus();
   const collectionReference = collection(db, user);
-  const fileRef = useRef();
 
   // when app loads, get data from the database
   useEffect(() => {
@@ -81,30 +60,6 @@ function App() {
     });
   }, []);
 
-  function uploadFile(file) {
-    if (!file) {
-      alert("No file found");
-      return;
-    }
-    const storageRef = ref(storage, `/files/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setProgress(progress);
-      },
-      (err) => {
-        console.error(err.message);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((url) => setFileURL(url));
-      }
-    );
-  }
-
   return (
     <div className={user === "tasks" ? "padding-off" : "padding-on"}>
       <Header />
@@ -112,91 +67,8 @@ function App() {
         <ManageUser />
       ) : (
         <div>
-          <div style={spinnerStyle}>
-            <BounceLoader loading={isLoading} color="#2196f3" />
-          </div>
-          <form className="task-form">
-            <FormControl
-              className="task-input-control"
-              sx={{
-                marginBottom: "1rem",
-              }}
-            >
-              <InputLabel>What needs to be done?</InputLabel>
-              <Input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-              />
-            </FormControl>
-            <InputLabel>Pick a Deadline</InputLabel>
-            <FormControl
-              className="task-datetime-control"
-              sx={{
-                display: "block",
-              }}
-            >
-              <Input
-                type="datetime-local"
-                className="datetime"
-                value={dateTimeInput}
-                onChange={(e) => setDateTimeInput(e.target.value)}
-              />
-            </FormControl>
-            <FormControl
-              className="task-comment-control"
-              sx={{
-                marginTop: "1rem",
-              }}
-            >
-              <InputLabel>Add a comment (Optional)</InputLabel>
-              <Input
-                type="text"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
-            </FormControl>
-            <input
-              style={{
-                margin: "1rem auto",
-                display: "block",
-                fontSize: "1rem",
-              }}
-              type="file"
-              ref={fileRef}
-              onChange={(e) => {
-                e.preventDefault();
-                uploadFile(e.target.files[0]);
-              }}
-            />
-            <Button
-              sx={{
-                margin: "1rem auto",
-                display: "block",
-              }}
-              disabled={!input || !dateTimeInput}
-              type="submit"
-              variant="contained"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo(0, 0);
-                addToFirebase(
-                  collectionReference,
-                  input,
-                  getDateTime(dateTimeInput),
-                  dateTimeInput,
-                  comment,
-                  fileURL
-                );
-                setInput("");
-                setDateTimeInput("");
-                setComment("");
-                fileRef.current.value = "";
-              }}
-            >
-              Add Task
-            </Button>
-          </form>
+          <Spinner isLoading={isLoading} />
+          <TodoForm />
           <ul>
             {todos.map((todo) => (
               <Todo
