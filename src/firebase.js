@@ -26,9 +26,6 @@ initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
 
-// get collection reference
-// export const collectionReference = collection(db, "tasks");
-
 // Add to Database
 export async function addToFirebase(
   collectionReference,
