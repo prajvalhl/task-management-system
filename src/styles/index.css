@@ -1,15 +1,30 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap");
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0 auto;
   padding: 0;
   text-align: center;
   font-family: "Roboto", sans-serif;
   width: 60%;
-  padding-top: 16rem;
+}
+
+.padding-on {
+  padding-top: 17rem;
+}
+
+.padding-off {
+  padding-top: 5rem;
 }
 
 .header {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -18,18 +33,26 @@ body {
   box-sizing: border-box;
   background-color: white;
   z-index: 100;
+  padding: 0 2rem;
 }
 
-.header p {
-  font-size: 2rem;
-  margin-block-start: 1rem;
-  margin-block-end: 1rem;
+.header .brand-name {
+  font-weight: bold;
+}
+
+.header button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.2rem;
+  cursor: pointer;
+  border-radius: 0.2rem;
 }
 
 .task-form {
   position: fixed;
   width: 60%;
-  top: 4.2rem;
+  top: 3rem;
   left: 0;
   right: 0;
   margin-left: auto;
@@ -37,7 +60,7 @@ body {
   background-color: rgba(255, 255, 255, 0.4);
   z-index: 99;
   backdrop-filter: blur(5px);
-  padding: 1rem 0;
+  padding: 2rem 0 1rem 0;
 }
 
 .task-input-control {
@@ -45,7 +68,7 @@ body {
 }
 
 .add-todo-btn {
-  margin: 1rem 0;
+  margin-left: 1rem;
 }
 
 ul {
@@ -57,12 +80,23 @@ ul {
     width: 100%;
   }
 
-  .task-form {
-    width: 100%;
-    top: 3.6rem;
+  .padding-on {
+    padding-top: 18rem;
   }
 
-  .header p {
-    font-size: 1.5rem;
+  .task-form {
+    width: 100%;
+    top: 5rem;
+  }
+
+  .header {
+    padding: 0 1rem 0 0.5rem;
+  }
+
+  .header .brand {
+    flex: 0.5;
+  }
+  .header .username-display {
+    flex: 1;
   }
 }

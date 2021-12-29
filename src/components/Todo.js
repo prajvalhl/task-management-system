@@ -12,15 +12,17 @@ import {
   Checkbox,
 } from "@mui/material";
 import { getDateTime } from "../App";
+import { useUserStatus } from "../user-context";
 
 function Todo({ todo, updateFunc, deleteFunc }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
+  const { user } = useUserStatus();
 
   return (
     <div>
-      <Modal open={open} onClose={(e) => setOpen(false)}>
+      <Modal open={open} onClose={() => setOpen(false)}>
         <div className="edit-modal">
           <h3>Edit</h3>
           <form>
@@ -50,27 +52,30 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                 onChange={(e) => setDateTimeInput(e.target.value)}
               />
             </FormControl>
+            <Button
+              sx={{
+                marginTop: "1rem",
+              }}
+              type="submit"
+              disabled={!input && !dateTimeInput}
+              onClick={(e) => {
+                e.preventDefault();
+                updateFunc(
+                  user,
+                  todo.id,
+                  "updateTitle",
+                  input ? input : todo.task,
+                  dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
+                  dateTimeInput ? dateTimeInput : todo.deadline24
+                );
+                setInput("");
+                setDateTimeInput("");
+                setOpen(false);
+              }}
+            >
+              Update Task
+            </Button>
           </form>
-          <Button
-            sx={{
-              marginTop: "1rem",
-            }}
-            disabled={!input && !dateTimeInput}
-            onClick={() => {
-              updateFunc(
-                todo.id,
-                "updateTitle",
-                input ? input : todo.task,
-                dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
-                dateTimeInput ? dateTimeInput : todo.deadline24
-              );
-              setInput("");
-              setDateTimeInput("");
-              setOpen(false);
-            }}
-          >
-            Update Task
-          </Button>
         </div>
       </Modal>
       <List>
@@ -78,7 +83,7 @@ function Todo({ todo, updateFunc, deleteFunc }) {
           <Checkbox
             checked={todo.isDone}
             onChange={() => {
-              updateFunc(todo.id, "updateBoolean", !todo.isDone);
+              updateFunc(user, todo.id, "updateBoolean", !todo.isDone);
             }}
           />
           <ListItemText
@@ -100,7 +105,7 @@ function Todo({ todo, updateFunc, deleteFunc }) {
           </Button>
           <Button
             onClick={() => {
-              deleteFunc(todo.id);
+              deleteFunc(user, todo.id);
             }}
           >
             <span className="material-icons">delete</span>
