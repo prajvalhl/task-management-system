@@ -117,48 +117,50 @@ function Todo({ todo, updateFunc, deleteFunc }) {
         {todo.comment.length > 0
           ? todo.comment.map((comment) => (
               <li key={comment.id} className="comment-item">
-                {comment.text}
+                👉 {comment.text}
               </li>
             ))
           : null}
-        <ListItem>
-          <FormControl className="todo-edit-form">
-            <InputLabel>Add a comment (Optional)</InputLabel>
-            <Input
-              type="text"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-          </FormControl>
-          <Button
-            sx={{
-              margin: "0 1rem",
-            }}
-            disabled={!comment}
-            type="submit"
-            variant="contained"
-            onClick={(e) => {
-              e.preventDefault();
-              updateFunc(
-                user,
-                todo.id,
-                "updateComment",
-                input ? input : todo.task,
-                dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
-                dateTimeInput ? dateTimeInput : todo.deadline24,
-                comment
-                  ? [
-                      ...todo.comment,
-                      { id: todo.comment.length, text: comment },
-                    ]
-                  : todo.comment
-              );
-              setComment("");
-            }}
-          >
-            Add
-          </Button>
-        </ListItem>
+        <form>
+          <ListItem>
+            <FormControl className="todo-edit-form todo-comment-input">
+              <InputLabel>Add a comment (Optional)</InputLabel>
+              <Input
+                type="text"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </FormControl>
+            <Button
+              sx={{
+                margin: "0 1rem",
+              }}
+              disabled={!comment}
+              type="submit"
+              variant="contained"
+              onClick={(e) => {
+                e.preventDefault();
+                updateFunc(
+                  user,
+                  todo.id,
+                  "updateComment",
+                  input ? input : todo.task,
+                  dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
+                  dateTimeInput ? dateTimeInput : todo.deadline24,
+                  comment
+                    ? [
+                        ...todo.comment,
+                        { id: todo.comment.length, text: comment },
+                      ]
+                    : todo.comment
+                );
+                setComment("");
+              }}
+            >
+              Add
+            </Button>
+          </ListItem>
+        </form>
       </List>
     </div>
   );
