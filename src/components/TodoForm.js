@@ -8,7 +8,6 @@ import { collection } from "firebase/firestore";
 
 function TodoForm() {
   const [input, setInput] = useState("");
-  const [comment, setComment] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
   const { user } = useUserStatus();
   const collectionReference = collection(db, user);
@@ -63,7 +62,6 @@ function TodoForm() {
             );
             setInput("");
             setDateTimeInput("");
-            setComment("");
           }}
         >
           Add Task

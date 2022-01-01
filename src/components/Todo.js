@@ -18,7 +18,6 @@ function Todo({ todo, updateFunc, deleteFunc }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [comment, setComment] = useState("");
-  const [commentList, setCommentList] = useState([]);
   const [dateTimeInput, setDateTimeInput] = useState("");
   const { user } = useUserStatus();
 
