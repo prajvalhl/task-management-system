@@ -9,6 +9,7 @@ import { useUserStatus } from "./user-context";
 import { onAuthStateChanged } from "firebase/auth";
 import Spinner from "./components/Spinner";
 import TodoForm from "./components/TodoForm";
+import NoTasksFound from "./components/NoTasksFound";
 
 export function getDateTime(dateTime) {
   const result = {};
@@ -70,15 +71,19 @@ function App() {
           <Spinner isLoading={isLoading} />
           <TodoForm />
           <ul>
-            {todos.map((todo) => (
-              <Todo
-                className="task-list-item"
-                key={todo.id}
-                todo={todo}
-                deleteFunc={deleteFromFirebase}
-                updateFunc={updateDocuments}
-              />
-            ))}
+            {todos.length === 0 ? (
+              <NoTasksFound />
+            ) : (
+              todos.map((todo) => (
+                <Todo
+                  className="task-list-item"
+                  key={todo.id}
+                  todo={todo}
+                  deleteFunc={deleteFromFirebase}
+                  updateFunc={updateDocuments}
+                />
+              ))
+            )}
           </ul>
         </div>
       )}
