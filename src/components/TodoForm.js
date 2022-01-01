@@ -43,19 +43,6 @@ function TodoForm() {
             onChange={(e) => setDateTimeInput(e.target.value)}
           />
         </FormControl>
-        <FormControl
-          className="task-comment-control"
-          sx={{
-            marginTop: "1rem",
-          }}
-        >
-          <InputLabel>Add a comment (Optional)</InputLabel>
-          <Input
-            type="text"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-        </FormControl>
         <Button
           sx={{
             margin: "1rem auto",
@@ -72,7 +59,7 @@ function TodoForm() {
               input,
               getDateTime(dateTimeInput),
               dateTimeInput,
-              comment
+              []
             );
             setInput("");
             setDateTimeInput("");

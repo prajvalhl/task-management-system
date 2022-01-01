@@ -67,11 +67,15 @@ export async function updateDocuments(
         deadline: updatedDeadline,
         deadline24: updatedDeadline24,
         updatedAt: serverTimestamp(),
-        comment: commentField,
       });
     } else if (taskName === "updateBoolean") {
       await updateDoc(docRef, {
         isDone: updatedTask,
+        updatedAt: serverTimestamp(),
+      });
+    } else {
+      await updateDoc(docRef, {
+        comment: commentField,
         updatedAt: serverTimestamp(),
       });
     }
