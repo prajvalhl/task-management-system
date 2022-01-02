@@ -39,13 +39,4 @@
   .todo-edit-form {
     width: 90%;
   }
-
-  .css-1p823my-MuiListItem-root {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  .todo-comment-input {
-    margin-left: 1rem !important;
-  }
 }
