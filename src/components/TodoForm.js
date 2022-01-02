@@ -104,6 +104,7 @@ function TodoForm() {
             );
             setInput("");
             setDateTimeInput("");
+            setFileURL("");
             fileRef.current.value = "";
           }}
         >
