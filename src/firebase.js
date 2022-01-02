@@ -8,6 +8,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { getAuth, signOut } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDphCye4UyjFjUxIJmDjKsvBxcVxiAKaH8",
@@ -25,6 +26,7 @@ initializeApp(firebaseConfig);
 // init services
 export const db = getFirestore();
 export const auth = getAuth();
+export const storage = getStorage();
 
 // Add to Database
 export async function addToFirebase(
@@ -32,7 +34,8 @@ export async function addToFirebase(
   input,
   dateTime,
   dateTime24,
-  commentField
+  commentField,
+  fileURL
 ) {
   try {
     await addDoc(collectionReference, {
@@ -43,6 +46,7 @@ export async function addToFirebase(
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       comment: commentField,
+      fileUrl: fileURL,
     });
   } catch (err) {
     console.error(err.message);
