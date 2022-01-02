@@ -16,6 +16,7 @@ import { useUserStatus } from "../user-context";
 
 function Todo({ todo, updateFunc, deleteFunc }) {
   const [open, setOpen] = useState(false);
+  const [subModalOpen, setSubModalOpen] = useState(false);
   const [input, setInput] = useState("");
   const [comment, setComment] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
@@ -69,7 +70,7 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                   input ? input : todo.task,
                   dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
                   dateTimeInput ? dateTimeInput : todo.deadline24,
-                  comment
+                  todo.comment
                 );
                 setInput("");
                 setDateTimeInput("");
@@ -117,7 +118,32 @@ function Todo({ todo, updateFunc, deleteFunc }) {
         {todo.comment.length > 0
           ? todo.comment.map((comment) => (
               <li key={comment.id} className="comment-item">
-                👉 {comment.text}
+                💬 {comment.text}
+                <Button
+                  sx={{
+                    color: "red",
+                  }}
+                  onClick={() => {
+                    const updatedCommentList = todo.comment.filter(
+                      (todoComment) => {
+                        return comment.id !== todoComment.id;
+                      }
+                    );
+                    updateFunc(
+                      user,
+                      todo.id,
+                      "deleteComment",
+                      input ? input : todo.task,
+                      dateTimeInput
+                        ? getDateTime(dateTimeInput)
+                        : todo.deadline,
+                      dateTimeInput ? dateTimeInput : todo.deadline24,
+                      updatedCommentList
+                    );
+                  }}
+                >
+                  Delete
+                </Button>
               </li>
             ))
           : null}
@@ -150,7 +176,13 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                   comment
                     ? [
                         ...todo.comment,
-                        { id: todo.comment.length, text: comment },
+                        {
+                          id:
+                            todo.comment.length === 0
+                              ? 0
+                              : todo.comment[todo.comment.length - 1].id + 1,
+                          text: comment,
+                        },
                       ]
                     : todo.comment
                 );
