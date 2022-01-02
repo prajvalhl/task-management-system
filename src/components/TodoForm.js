@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../styles/index.css";
 import { Button, FormControl, Input, InputLabel } from "@mui/material";
-import { db, addToFirebase } from "../firebase";
+import { db, addToFirebase, storage } from "../firebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useUserStatus } from "../user-context";
 import { getDateTime } from "../App";
 import { collection } from "firebase/firestore";
@@ -9,8 +10,35 @@ import { collection } from "firebase/firestore";
 function TodoForm() {
   const [input, setInput] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [fileURL, setFileURL] = useState("");
   const { user } = useUserStatus();
   const collectionReference = collection(db, user);
+  const fileRef = useRef();
+
+  function uploadFile(file) {
+    if (!file) {
+      alert("No file found");
+      return;
+    }
+    const storageRef = ref(storage, `/files/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgress(progress);
+      },
+      (err) => {
+        console.error(err.message);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => setFileURL(url));
+      }
+    );
+  }
 
   return (
     <div>
@@ -42,6 +70,19 @@ function TodoForm() {
             onChange={(e) => setDateTimeInput(e.target.value)}
           />
         </FormControl>
+        <input
+          style={{
+            margin: "1rem auto",
+            display: "block",
+            fontSize: "1rem",
+          }}
+          type="file"
+          ref={fileRef}
+          onChange={(e) => {
+            e.preventDefault();
+            uploadFile(e.target.files[0]);
+          }}
+        />
         <Button
           sx={{
             margin: "1rem auto",
@@ -58,10 +99,12 @@ function TodoForm() {
               input,
               getDateTime(dateTimeInput),
               dateTimeInput,
-              []
+              [],
+              fileURL
             );
             setInput("");
             setDateTimeInput("");
+            fileRef.current.value = "";
           }}
         >
           Add Task

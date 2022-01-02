@@ -16,7 +16,6 @@ import { useUserStatus } from "../user-context";
 
 function Todo({ todo, updateFunc, deleteFunc }) {
   const [open, setOpen] = useState(false);
-  const [subModalOpen, setSubModalOpen] = useState(false);
   const [input, setInput] = useState("");
   const [comment, setComment] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
@@ -98,6 +97,15 @@ function Todo({ todo, updateFunc, deleteFunc }) {
             primary={todo.task}
             secondary={`⏰ Deadline: ${todo.deadline}`}
           />
+          {todo.fileUrl && (
+            <Button
+              onClick={() => {
+                window.open(todo.fileUrl, "_blank").focus();
+              }}
+            >
+              <span className="material-icons">download</span>
+            </Button>
+          )}
           <Button
             onClick={() => {
               setOpen(true);
