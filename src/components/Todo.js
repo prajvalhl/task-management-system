@@ -16,7 +16,6 @@ import { useUserStatus } from "../user-context";
 
 function Todo({ todo, updateFunc, deleteFunc }) {
   const [open, setOpen] = useState(false);
-  const [subModalOpen, setSubModalOpen] = useState(false);
   const [input, setInput] = useState("");
   const [comment, setComment] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
