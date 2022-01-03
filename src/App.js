@@ -57,7 +57,7 @@ function App() {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      setUser(user.email ? user.email : "tasks");
+      setUser(user?.email ? user.email : "tasks");
     });
   }, []);
 
