@@ -30,6 +30,7 @@ function TodoForm() {
         </FormControl>
         <InputLabel>Pick a Deadline</InputLabel>
         <FormControl
+          className="task-datetime-control"
           sx={{
             display: "block",
           }}
@@ -43,7 +44,8 @@ function TodoForm() {
         </FormControl>
         <Button
           sx={{
-            margin: "1rem",
+            margin: "1rem auto",
+            display: "block",
           }}
           disabled={!input || !dateTimeInput}
           type="submit"
@@ -55,7 +57,8 @@ function TodoForm() {
               collectionReference,
               input,
               getDateTime(dateTimeInput),
-              dateTimeInput
+              dateTimeInput,
+              []
             );
             setInput("");
             setDateTimeInput("");

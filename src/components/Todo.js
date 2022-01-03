@@ -16,7 +16,9 @@ import { useUserStatus } from "../user-context";
 
 function Todo({ todo, updateFunc, deleteFunc }) {
   const [open, setOpen] = useState(false);
+  const [subModalOpen, setSubModalOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [comment, setComment] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
   const { user } = useUserStatus();
 
@@ -54,7 +56,8 @@ function Todo({ todo, updateFunc, deleteFunc }) {
             </FormControl>
             <Button
               sx={{
-                marginTop: "1rem",
+                margin: "1rem auto 0 auto",
+                display: "block",
               }}
               type="submit"
               disabled={!input && !dateTimeInput}
@@ -66,7 +69,8 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                   "updateTitle",
                   input ? input : todo.task,
                   dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
-                  dateTimeInput ? dateTimeInput : todo.deadline24
+                  dateTimeInput ? dateTimeInput : todo.deadline24,
+                  todo.comment
                 );
                 setInput("");
                 setDateTimeInput("");
@@ -78,7 +82,7 @@ function Todo({ todo, updateFunc, deleteFunc }) {
           </form>
         </div>
       </Modal>
-      <List>
+      <List className="todo-item" sx={{ margin: "1rem 0.2rem" }}>
         <ListItem>
           <Checkbox
             checked={todo.isDone}
@@ -87,9 +91,9 @@ function Todo({ todo, updateFunc, deleteFunc }) {
             }}
           />
           <ListItemText
-            className="todo-list"
             style={{
               textDecoration: todo.isDone ? "line-through" : "none",
+              marginLeft: "1rem",
             }}
             primary={todo.task}
             secondary={`⏰ Deadline: ${todo.deadline}`}
@@ -111,6 +115,84 @@ function Todo({ todo, updateFunc, deleteFunc }) {
             <span className="material-icons">delete</span>
           </Button>
         </ListItem>
+        {todo.comment.length > 0
+          ? todo.comment.map((comment) => (
+              <li key={comment.id} className="comment-item">
+                💬 {comment.text}
+                <Button
+                  sx={{
+                    color: "red",
+                  }}
+                  onClick={() => {
+                    const updatedCommentList = todo.comment.filter(
+                      (todoComment) => {
+                        return comment.id !== todoComment.id;
+                      }
+                    );
+                    updateFunc(
+                      user,
+                      todo.id,
+                      "deleteComment",
+                      input ? input : todo.task,
+                      dateTimeInput
+                        ? getDateTime(dateTimeInput)
+                        : todo.deadline,
+                      dateTimeInput ? dateTimeInput : todo.deadline24,
+                      updatedCommentList
+                    );
+                  }}
+                >
+                  Delete
+                </Button>
+              </li>
+            ))
+          : null}
+        <form>
+          <ListItem>
+            <FormControl className="todo-edit-form todo-comment-input">
+              <InputLabel>Add a comment (Optional)</InputLabel>
+              <Input
+                type="text"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </FormControl>
+            <Button
+              sx={{
+                margin: "0 1rem",
+              }}
+              disabled={!comment}
+              type="submit"
+              variant="contained"
+              onClick={(e) => {
+                e.preventDefault();
+                updateFunc(
+                  user,
+                  todo.id,
+                  "updateComment",
+                  input ? input : todo.task,
+                  dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
+                  dateTimeInput ? dateTimeInput : todo.deadline24,
+                  comment
+                    ? [
+                        ...todo.comment,
+                        {
+                          id:
+                            todo.comment.length === 0
+                              ? 0
+                              : todo.comment[todo.comment.length - 1].id + 1,
+                          text: comment,
+                        },
+                      ]
+                    : todo.comment
+                );
+                setComment("");
+              }}
+            >
+              Add
+            </Button>
+          </ListItem>
+        </form>
       </List>
     </div>
   );
