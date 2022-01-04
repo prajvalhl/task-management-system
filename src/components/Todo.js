@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../styles/Todo.css";
 import {
   List,
@@ -11,6 +11,13 @@ import {
   InputLabel,
   Checkbox,
 } from "@mui/material";
+import { db, addToFirebase, storage } from "../firebase";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+  deleteObject,
+} from "firebase/storage";
 import { getDateTime } from "../App";
 import { useUserStatus } from "../user-context";
 
@@ -19,7 +26,100 @@ function Todo({ todo, updateFunc, deleteFunc }) {
   const [input, setInput] = useState("");
   const [comment, setComment] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [showProgress, setShowProgress] = useState(false);
+  const [fileURL, setFileURL] = useState("");
+  const [filePath, setFilePath] = useState("");
   const { user } = useUserStatus();
+  const fileRef = useRef();
+
+  function addComment() {
+    updateFunc(
+      user,
+      todo.id,
+      "updateComment",
+      input ? input : todo.task,
+      dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
+      dateTimeInput ? dateTimeInput : todo.deadline24,
+      comment
+        ? [
+            ...todo.comment,
+            {
+              id:
+                todo.comment.length === 0
+                  ? 0
+                  : todo.comment[todo.comment.length - 1].id + 1,
+              text: comment,
+            },
+          ]
+        : todo.comment,
+      todo.filePath,
+      todo.fileUrl
+    );
+    setComment("");
+  }
+
+  function deleteComment(comment) {
+    const updatedCommentList = todo.comment.filter((todoComment) => {
+      return comment.id !== todoComment.id;
+    });
+    updateFunc(
+      user,
+      todo.id,
+      "deleteComment",
+      input ? input : todo.task,
+      dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
+      dateTimeInput ? dateTimeInput : todo.deadline24,
+      updatedCommentList,
+      todo.fileUrl,
+      todo.filePath
+    );
+  }
+
+  async function deleteFile(filePath) {
+    const fileReference = ref(storage, filePath);
+    try {
+      await deleteObject(fileReference);
+      updateFunc(
+        user,
+        todo.id,
+        "updateFiles",
+        input ? input : todo.task,
+        dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
+        dateTimeInput ? dateTimeInput : todo.deadline24,
+        todo.comment,
+        "",
+        ""
+      );
+    } catch (e) {
+      console.error(e.message);
+    }
+  }
+
+  function uploadFile(file) {
+    if (!file) {
+      alert("No file found");
+      return;
+    }
+    setFilePath(`/files/${file.name}`);
+    const storageRef = ref(storage, `/files/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgress(progress);
+      },
+      (err) => {
+        console.error(err.message);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => setFileURL(url));
+      }
+    );
+  }
 
   return (
     <div>
@@ -53,9 +153,39 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                 onChange={(e) => setDateTimeInput(e.target.value)}
               />
             </FormControl>
+            {todo.filePath && (
+              <Button
+                sx={{
+                  color: "red",
+                  marginTop: "1rem",
+                }}
+                onClick={() => {
+                  deleteFile(todo.filePath);
+                }}
+              >
+                Delete Attached File
+              </Button>
+            )}
+            {!todo.filePath && (
+              <input
+                style={{
+                  margin: "1rem auto",
+                  display: "block",
+                  fontSize: "1rem",
+                }}
+                type="file"
+                ref={fileRef}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setShowProgress(true);
+                  uploadFile(e.target.files[0]);
+                }}
+              />
+            )}
+            <p>{showProgress && `Uploading file: ${progress}%`}</p>
             <Button
               sx={{
-                margin: "1rem auto 0 auto",
+                margin: "0.5rem auto 0 auto",
                 display: "block",
               }}
               type="submit"
@@ -69,10 +199,14 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                   input ? input : todo.task,
                   dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
                   dateTimeInput ? dateTimeInput : todo.deadline24,
-                  todo.comment
+                  todo.comment,
+                  fileURL ? fileURL : todo.fileUrl,
+                  filePath ? filePath : todo.filePath
                 );
                 setInput("");
                 setDateTimeInput("");
+                setShowProgress(false);
+                setFilePath("");
                 setOpen(false);
               }}
             >
@@ -132,22 +266,7 @@ function Todo({ todo, updateFunc, deleteFunc }) {
                     color: "red",
                   }}
                   onClick={() => {
-                    const updatedCommentList = todo.comment.filter(
-                      (todoComment) => {
-                        return comment.id !== todoComment.id;
-                      }
-                    );
-                    updateFunc(
-                      user,
-                      todo.id,
-                      "deleteComment",
-                      input ? input : todo.task,
-                      dateTimeInput
-                        ? getDateTime(dateTimeInput)
-                        : todo.deadline,
-                      dateTimeInput ? dateTimeInput : todo.deadline24,
-                      updatedCommentList
-                    );
+                    deleteComment(comment);
                   }}
                 >
                   Delete
@@ -174,27 +293,7 @@ function Todo({ todo, updateFunc, deleteFunc }) {
               variant="contained"
               onClick={(e) => {
                 e.preventDefault();
-                updateFunc(
-                  user,
-                  todo.id,
-                  "updateComment",
-                  input ? input : todo.task,
-                  dateTimeInput ? getDateTime(dateTimeInput) : todo.deadline,
-                  dateTimeInput ? dateTimeInput : todo.deadline24,
-                  comment
-                    ? [
-                        ...todo.comment,
-                        {
-                          id:
-                            todo.comment.length === 0
-                              ? 0
-                              : todo.comment[todo.comment.length - 1].id + 1,
-                          text: comment,
-                        },
-                      ]
-                    : todo.comment
-                );
-                setComment("");
+                addComment();
               }}
             >
               Add

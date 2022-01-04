@@ -11,7 +11,9 @@ function TodoForm() {
   const [input, setInput] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
   const [progress, setProgress] = useState(0);
+  const [showProgress, setShowProgress] = useState(false);
   const [fileURL, setFileURL] = useState("");
+  const [filePath, setFilePath] = useState("");
   const { user } = useUserStatus();
   const collectionReference = collection(db, user);
   const fileRef = useRef();
@@ -21,6 +23,7 @@ function TodoForm() {
       alert("No file found");
       return;
     }
+    setFilePath(`/files/${file.name}`);
     const storageRef = ref(storage, `/files/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
     uploadTask.on(
@@ -80,9 +83,11 @@ function TodoForm() {
           ref={fileRef}
           onChange={(e) => {
             e.preventDefault();
+            setShowProgress(true);
             uploadFile(e.target.files[0]);
           }}
         />
+        <p>{showProgress && `Uploading file: ${progress}%`}</p>
         <Button
           sx={{
             margin: "1rem auto",
@@ -100,12 +105,16 @@ function TodoForm() {
               getDateTime(dateTimeInput),
               dateTimeInput,
               [],
-              fileURL
+              fileURL,
+              filePath
             );
             setInput("");
             setDateTimeInput("");
             setFileURL("");
+            setProgress(0);
             fileRef.current.value = "";
+            setShowProgress(false);
+            setFilePath("");
           }}
         >
           Add Task
