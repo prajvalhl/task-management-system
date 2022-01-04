@@ -11,7 +11,7 @@ import {
   InputLabel,
   Checkbox,
 } from "@mui/material";
-import { db, addToFirebase, storage } from "../firebase";
+import { storage } from "../firebase";
 import {
   getDownloadURL,
   ref,
