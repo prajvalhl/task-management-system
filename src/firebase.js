@@ -35,7 +35,8 @@ export async function addToFirebase(
   dateTime,
   dateTime24,
   commentField,
-  fileURL
+  fileURL,
+  filePath
 ) {
   try {
     await addDoc(collectionReference, {
@@ -47,6 +48,7 @@ export async function addToFirebase(
       updatedAt: serverTimestamp(),
       comment: commentField,
       fileUrl: fileURL,
+      filePath: filePath,
     });
   } catch (err) {
     console.error(err.message);
@@ -61,7 +63,9 @@ export async function updateDocuments(
   updatedTask,
   updatedDeadline,
   updatedDeadline24,
-  commentField
+  commentField,
+  fileUrl,
+  filePath
 ) {
   try {
     const docRef = doc(db, dbName, id);
@@ -71,10 +75,18 @@ export async function updateDocuments(
         deadline: updatedDeadline,
         deadline24: updatedDeadline24,
         updatedAt: serverTimestamp(),
+        fileUrl: fileUrl,
+        filePath: filePath,
       });
     } else if (taskName === "updateBoolean") {
       await updateDoc(docRef, {
         isDone: updatedTask,
+        updatedAt: serverTimestamp(),
+      });
+    } else if (taskName === "updateFiles") {
+      await updateDoc(docRef, {
+        fileUrl: fileUrl,
+        filePath: filePath,
         updatedAt: serverTimestamp(),
       });
     } else {
@@ -101,7 +113,7 @@ export async function deleteFromFirebase(dbName, id) {
 // signing out a user
 export async function UserSignOut() {
   try {
-    signOut(auth);
+    await signOut(auth);
   } catch (e) {
     console.error(e.message);
   }
