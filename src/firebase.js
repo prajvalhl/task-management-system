@@ -8,6 +8,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { getAuth, signOut } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDphCye4UyjFjUxIJmDjKsvBxcVxiAKaH8",
@@ -25,6 +26,7 @@ initializeApp(firebaseConfig);
 // init services
 export const db = getFirestore();
 export const auth = getAuth();
+export const storage = getStorage();
 
 // Add to Database
 export async function addToFirebase(
@@ -32,7 +34,9 @@ export async function addToFirebase(
   input,
   dateTime,
   dateTime24,
-  commentField
+  commentField,
+  fileURL,
+  filePath
 ) {
   try {
     await addDoc(collectionReference, {
@@ -43,6 +47,8 @@ export async function addToFirebase(
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       comment: commentField,
+      fileUrl: fileURL,
+      filePath: filePath,
     });
   } catch (err) {
     console.error(err.message);
@@ -57,7 +63,9 @@ export async function updateDocuments(
   updatedTask,
   updatedDeadline,
   updatedDeadline24,
-  commentField
+  commentField,
+  fileUrl,
+  filePath
 ) {
   try {
     const docRef = doc(db, dbName, id);
@@ -67,10 +75,18 @@ export async function updateDocuments(
         deadline: updatedDeadline,
         deadline24: updatedDeadline24,
         updatedAt: serverTimestamp(),
+        fileUrl: fileUrl,
+        filePath: filePath,
       });
     } else if (taskName === "updateBoolean") {
       await updateDoc(docRef, {
         isDone: updatedTask,
+        updatedAt: serverTimestamp(),
+      });
+    } else if (taskName === "updateFiles") {
+      await updateDoc(docRef, {
+        fileUrl: fileUrl,
+        filePath: filePath,
         updatedAt: serverTimestamp(),
       });
     } else {
@@ -97,7 +113,7 @@ export async function deleteFromFirebase(dbName, id) {
 // signing out a user
 export async function UserSignOut() {
   try {
-    signOut(auth);
+    await signOut(auth);
   } catch (e) {
     console.error(e.message);
   }
