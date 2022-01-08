@@ -97,7 +97,7 @@ export async function deleteFromFirebase(dbName, id) {
 // signing out a user
 export async function UserSignOut() {
   try {
-    signOut(auth);
+    await signOut(auth);
   } catch (e) {
     console.error(e.message);
   }
